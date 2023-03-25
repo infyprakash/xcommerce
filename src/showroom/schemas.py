@@ -2,11 +2,12 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
+from src.core.enumerate import DistrictEnum,ProvinceEnum
 
 class AddressBase(BaseModel):
     country: str = 'Nepal'
-    province: str
-    district: str
+    province: ProvinceEnum = None
+    district: DistrictEnum = None
     municipality: str
     city_or_village: str
     ward: str

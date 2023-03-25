@@ -32,9 +32,13 @@ class Product(Base):
     created_at = Column(DateTime,nullable=False,default=datetime.now())
     updated_at = Column(DateTime,nullable=False,default=datetime.now())
     category_id = Column(Integer,ForeignKey('categories.id'))
+    shop_id = Column(Integer,ForeignKey('shops.id'))
+
     
     category = relationship('Category',back_populates='products')
     product_images = relationship('ProductImage',back_populates='products')
+    shop = relationship('Shop',back_populates='products')
+
     
     __mapper_args__ = {
         "eager_defaults": True,
