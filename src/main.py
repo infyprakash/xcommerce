@@ -7,10 +7,15 @@ def include_routes(app):
     from src.catalogue.routes import category_router
     from src.catalogue.routes import product_router
     from src.catalogue.routes import product_image_router
+    from src.user.routes import user_router
+    from src.showroom.routes import shop_router,address_router
 
     app.include_router(category_router)
     app.include_router(product_router)
     app.include_router(product_image_router)
+    app.include_router(user_router)
+    app.include_router(address_router)
+    app.include_router(shop_router)
 
 def start_application():
     app = FastAPI(title=setting.PROJECT_NAME,version=setting.PROJECT_VRESION)

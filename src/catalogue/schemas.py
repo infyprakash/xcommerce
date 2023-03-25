@@ -31,6 +31,7 @@ class ProductBase(BaseModel):
     sku: str = None
     description: str
     category_id: int
+    shop_id: int
 
 
 class ProductCreate(ProductBase):
@@ -41,7 +42,8 @@ class ProductCreate(ProductBase):
                     "price":22000,
                     "sku": "XXXXX",
                     "description":"premium apple's Iphone13",
-                    "category_id":100
+                    "category_id":100,
+                    "shop_id":100
             }
         }
 
