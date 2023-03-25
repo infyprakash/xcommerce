@@ -4,8 +4,13 @@ from src.core.container import Container
 
 
 def include_routes(app):
-    from src.catalogue.routes import router as catalog_router
-    app.include_router(catalog_router)
+    from src.catalogue.routes import category_router
+    from src.catalogue.routes import product_router
+    from src.catalogue.routes import product_image_router
+
+    app.include_router(category_router)
+    app.include_router(product_router)
+    app.include_router(product_image_router)
 
 def start_application():
     app = FastAPI(title=setting.PROJECT_NAME,version=setting.PROJECT_VRESION)
@@ -22,5 +27,8 @@ async def startup():
 @app.on_event('shutdown')
 async def shutdown():
     container.destroy_session()
+
+
+
 
   

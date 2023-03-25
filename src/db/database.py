@@ -2,15 +2,24 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker,scoped_session,Session
+from sqlalchemy import Column,Boolean,Integer,String,Float,Unicode,DateTime,ForeignKey
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+from datetime import datetime
+from uuid import uuid4
+
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 Base = declarative_base()
 
+
 class Database:
     def __init__(self,db_url:str) -> None:
-        logger.info(f'[X]       Connecting to databas: {db_url}')
+        logger.info(f'[X]       Connecting to database: {db_url}')
         try:
             self.db_url = db_url
             self._engine = create_engine(db_url)
@@ -18,8 +27,6 @@ class Database:
             self._session_factory = scoped_session(self._session_maker)
         except Exception as e:
             logger.error(e)
-
-        
 
     def models_import(self):
         from src.catalogue import models
@@ -37,7 +44,6 @@ class Database:
     def get_session(self)->Session:
         session:Session = self._session_factory
         try:
-            session.query_property()
             return session
         except Exception as e:
             logger.exception('[X]       session roll back because of exception')
