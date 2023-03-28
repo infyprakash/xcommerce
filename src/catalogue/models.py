@@ -28,6 +28,8 @@ class Product(Base):
     # image_url = Column(String,nullable=False)
     sku = Column(String,nullable=True)
     description = Column(Unicode,default="description text")
+    available = Column(Boolean,default=True)
+    quantity = Column(Float,default=0.0)
     is_active = Column(Boolean,default=True)
     created_at = Column(DateTime,nullable=False,default=datetime.now())
     updated_at = Column(DateTime,nullable=False,default=datetime.now())

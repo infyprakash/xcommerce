@@ -1,10 +1,13 @@
-from fastapi import APIRouter,Depends,HTTPException,Response,status
-from src.catalogue.schemas import ProductCreate,CategoryCreate,CategoryModel,ProductModel,ProductImageCreate,ProductImageModel
+from fastapi import APIRouter,Depends,HTTPException,Response,status,UploadFile,File,Form
+from src.catalogue.schemas import ProductCreate,CategoryCreate,CategoryUpdate,CategoryModel,ProductModel,ProductImageCreate,ProductImageModel,ProductImageUpdate
 from src.core.container import Container
 from src.catalogue.models import Category,Product,ProductImage
 from src.core.repositories import ModelRepositories
 from fastapi.responses import JSONResponse
 from src.core.config import fomatter
+from fastapi.encoders import jsonable_encoder
+from typing import Optional
+
 
 
 category_router = APIRouter(prefix='/category',tags=['category'])
@@ -12,12 +15,14 @@ product_router = APIRouter(prefix='/product',tags=['product'])
 product_image_router = APIRouter(prefix='/product/image',tags=['product_image'])
 
 
-
-
 # category APIs
 @category_router.post('')
-def create_category(category:CategoryCreate):
+def create_category(category:CategoryCreate = Depends(),image:UploadFile | None = None):
     c = ModelRepositories(model_type=Category)
+    category = category.dict()
+    if image:
+        image_path = c.file_upload_and_save(image,'category')
+        category['image'] = image_path
     the_category = c.create(category)
     return JSONResponse(**fomatter.success_post_response('category',the_category))
 
@@ -47,11 +52,16 @@ def delete_category_by_id(id:int):
     return JSONResponse(**fomatter.success_delete_response('category',id))
 
 @category_router.put('')
-def update_category_by_id(id:int,category:CategoryCreate):
+def update_category_by_id(category:CategoryUpdate = Depends(),image:UploadFile | None = None ):
     c = ModelRepositories(model_type=Category)
-    the_category = c.get_by_id(id=id)
+    the_category = c.get_by_id(id=category.id)
     if the_category is None:
         return JSONResponse(**fomatter.error_get_by_id_response('category',id))
+    if image:
+        image_path = c.file_upload_and_save(image,'category')
+        category = category.dict()
+        category['image'] = image_path
+
     the_category = c.update_object(the_category,data=category)
     return JSONResponse(**fomatter.success_update_response(the_category,'category',id))
 
@@ -103,10 +113,12 @@ def update_prodct_by_id(id:int,product:ProductCreate):
 # product_images API
 
 @product_image_router.post('')
-def create_product_image(product_image:ProductImageCreate):
+def create_product_image(product_image:ProductImageCreate=Depends(),image:UploadFile | None = None):
     c = ModelRepositories(model_type=ProductImage)
+    image_path = c.file_upload_and_save(image,'product')
+    product_image = product_image.dict()
+    product_image['image_url'] = image_path
     the_product_image = c.create(product_image)
-    print(the_product_image)
     return JSONResponse(**fomatter.success_post_response('product_image',the_product_image))
 
 @product_image_router.get('')
@@ -136,11 +148,15 @@ def delete_product_image_by_id(id:int):
     return JSONResponse(**fomatter.success_delete_response('product_image',id))
 
 @product_image_router.put('')
-def update_product_image_by_id(id:int,product_image:ProductImageCreate):
+def update_product_image_by_id(product_image:ProductImageUpdate = Depends(),image:UploadFile | None = None):
     c = ModelRepositories(model_type=ProductImage)
     the_product_image = c.get_by_id(id=id)
     if the_product_image is None:
         return JSONResponse(**fomatter.error_get_by_id_response('product_image',id))
+    if image:
+        image_path = c.file_upload_and_save(image,'product')
+        product_image = product_image.dict()
+        product_image['image_url'] = image_path
     the_product_image = c.update_object(the_product_image,data=product_image)
     return JSONResponse(**fomatter.success_update_response(the_product_image,'product_image',id))
 

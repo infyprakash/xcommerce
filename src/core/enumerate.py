@@ -1,6 +1,12 @@
 from enum import Enum
 from typing import List
 
+class BusinessTypeEnum(str,Enum):
+    GROCERY = 'Grocery'
+    CLOTHING = 'Clothing'
+    ELECTRONICS = 'Electronics'
+
+
 class DistrictEnum(str, Enum):
     Bhojpur = "Bhojpur"
     Dhankuta = "Dhankuta"

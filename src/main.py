@@ -1,6 +1,9 @@
+import os 
 from fastapi import FastAPI 
 from src.core.config import setting
 from src.core.container import Container
+from fastapi.staticfiles import StaticFiles
+
 
 
 def include_routes(app):
@@ -19,6 +22,7 @@ def include_routes(app):
 
 def start_application():
     app = FastAPI(title=setting.PROJECT_NAME,version=setting.PROJECT_VRESION)
+    app.mount("/static", StaticFiles(directory="static"), name="static")
     container = Container().db_obj()
     include_routes(app)
     return container,app 

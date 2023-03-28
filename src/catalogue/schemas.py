@@ -1,3 +1,4 @@
+from fastapi import UploadFile,File
 from typing import List,Optional
 from pydantic import BaseModel,root_validator
 from uuid import UUID
@@ -7,20 +8,24 @@ from datetime import datetime
 
 class ProductImageBase(BaseModel):
     product_id: int
-    image_url: str 
+    # image_url: str 
 
 class ProductImageCreate(ProductImageBase):
-    class Config:
-        schema_extra = {
-            "example":{
-                "product_id": 100,
-                "image_url": "test.png"
-            }
-        }
+    pass
+    # class Config:
+    #     schema_extra = {
+    #         "example":{
+    #             "product_id": 100,
+    #             "image_url": "test.png"
+    #         }
+    #     }
+class ProductImageUpdate(ProductImageBase):
+    id: int 
 
 class ProductImageModel(ProductImageBase):
     id: int 
     uuid: UUID
+    image_url: str 
     class Config:
         orm_mode = True
 
@@ -30,6 +35,8 @@ class ProductBase(BaseModel):
     price: float
     sku: str = None
     description: str
+    available: bool = True
+    quantity:float = 0.0
     category_id: int
     shop_id: int
 
@@ -42,6 +49,8 @@ class ProductCreate(ProductBase):
                     "price":22000,
                     "sku": "XXXXX",
                     "description":"premium apple's Iphone13",
+                    "available": True,
+                    "quantity": 100,
                     "category_id":100,
                     "shop_id":100
             }
@@ -57,21 +66,25 @@ class ProductModel(ProductBase):
 # schema for category
 class CategoryBase(BaseModel):
     name: str 
-    image: str
+    # image: str
     description: str
 
 class CategoryCreate(CategoryBase):
-    class config:
-        schema_extra = {
-            "example":{
-                    "name":"Grocery",
-                    "image":"grocery.png",
-                    "description":"Describe this category"
-            }
-        }
+    pass
+    # class config:
+    #     schema_extra = {
+    #         "example":{
+    #                 "name":"Grocery",
+    #                 # "image":"grocery.png",
+    #                 "description":"Describe this category"
+    #         }
+    #     }
+class CategoryUpdate(CategoryBase):
+    id: int 
 
 class CategoryModel(CategoryBase):
     id: int 
+    image: str 
     uuid: UUID
     products: list[ProductModel] = []
     class Config:

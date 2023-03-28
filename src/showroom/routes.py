@@ -1,5 +1,5 @@
-from fastapi import APIRouter,Depends,HTTPException,Response,status
-from src.showroom.schemas import AddressCreate,AddressModel,ShopCreate,ShopModel
+from fastapi import APIRouter,Depends,HTTPException,Response,status,UploadFile
+from src.showroom.schemas import AddressCreate,AddressModel,ShopCreate,ShopModel,ShopUpdate
 from src.core.container import Container
 from src.showroom.models import Address,Shop
 from src.core.repositories import ModelRepositories
@@ -54,8 +54,17 @@ def update_address_by_id(id:int,address:AddressCreate):
 
 # shop APIs
 @shop_router.post('')
-def create_shop(shop:ShopCreate):
+def create_shop(shop:ShopCreate=Depends(),banner_image:UploadFile | None = None,logo_image:UploadFile | None = None):
+    print('hii')
     c = ModelRepositories(model_type=Shop)
+    shop = shop.dict()
+    if banner_image:
+        banner_image_path = c.file_upload_and_save(banner_image,'shop')
+        shop['banner_url'] = banner_image_path
+    if logo_image:
+        logo_image_path = c.file_upload_and_save(logo_image,'shop')
+        shop['logo_url'] = logo_image_path
+
     the_shop = c.create(shop)
     return JSONResponse(**fomatter.success_post_response('shop',the_shop))
 
@@ -85,11 +94,20 @@ def delete_shop_by_id(id:int):
     return JSONResponse(**fomatter.success_delete_response('shop',id))
 
 @shop_router.put('')
-def update_shop_by_id(id:int,shop:ShopCreate):
+def update_shop_by_id(shop:ShopUpdate=Depends(),banner_image:UploadFile | None = None,logo_image:UploadFile | None = None):
     c = ModelRepositories(model_type=Shop)
     the_shop = c.get_by_id(id=id)
     if the_shop is None:
         return JSONResponse(**fomatter.error_get_by_id_response('shop',id))
+    if banner_image:
+        banner_image_path = c.file_upload_and_save(banner_image,'shop')
+        shop = shop.dict()
+        shop['image_url'] = banner_image_path
+    if logo_image:
+        logo_image_path = c.file_upload_and_save(logo_image,'shop')
+        shop = shop.dict()
+        shop['logo_url'] = logo_image_path
+
     the_shop = c.update_object(the_shop,data=shop)
     return JSONResponse(**fomatter.success_update_response(the_shop,'shop',id))
 

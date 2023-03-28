@@ -9,9 +9,15 @@ from pathlib import Path
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
+CURRENT_DIR = Path( os.path.dirname(os.path.abspath(__file__)))
+
 class Settings:
     PROJECT_NAME:str = "intelligent ecommerce application"
     PROJECT_VRESION:str = "0.0.0"
+    SRC_DIR = CURRENT_DIR.parent.absolute()
+    MEDIA_DIR = Path('.') / 'media'
+    IMAGE_ALLOWED_EXTENSION = ('.png','jpg','.jpeg')
+
 
     POSTGRES_USER:str = os.getenv('POSTGRES_USER','prakash')
     POSTGRES_PASSWORD:str = os.getenv('POSTGRES_PASSWORD')
