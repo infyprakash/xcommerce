@@ -5,21 +5,34 @@ from pydantic import BaseModel
 from src.showroom.schemas import ShopModel
 
 class UserBase(BaseModel):
-    full_name: Optional[str]
-    email: str
-    phone_no: str
+    full_name: Optional[str] = None
+    email: str = None
+    phone_no: str 
     date_of_birth: Optional[date] = date(2050, 1, 1)
 
-class UserCreate(UserBase):
-    email: str
-    hashed_password: str
-    # class Config:
-    #     schema_extra = {
-    #         "example":{
-    #             "email":"xyz@gmail.com",
-    #             "password":"12@qwe"
-    #         }
-    #     }
+class UserCreate(BaseModel):
+    phone_no: str 
+    password: str
+    confirm_password: str
+    class Config:
+        schema_extra = {
+            "example":{
+                "phone_no":"9840143772",
+                "password":"adminadmin",
+                "confirm_password":"adminadmin"
+            }
+        }
+
+class UserLogin(BaseModel):
+    phone_no: str 
+    password: str 
+    class Config:
+        schema_extra = {
+            "example":{
+                "phone_no":"9840143772",
+                "password":"adminadmin",
+            }
+        }
 
 class UserUpdate(UserBase):
     pass 
@@ -31,3 +44,4 @@ class UserModel(UserBase):
 
     class Config:
         orm_mode = True
+        exclude = ('hashed_password',)

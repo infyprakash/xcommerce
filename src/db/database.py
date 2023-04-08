@@ -63,7 +63,7 @@ class Database:
     def destroy_session(self):
         logger.info(f'[X]       Disconnecting from database: {self.db_url}')
         self._engine.dispose()
-        self._session_maker.close()
+        # self._session_maker.close_all()
         self._session_factory.remove()
 
 

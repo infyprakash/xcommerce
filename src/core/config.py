@@ -25,6 +25,15 @@ class Settings:
     POSTGRES_DB= os.getenv('POSTGRES_DB','xdb')
     DATABASE_URL:str = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}'
 
+    #authentication
+    ACCESS_TOKEN_EXPIRE_MINUTES:str = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
+    REFRESH_TOKEN_EXPIRE_MINUTES:str = os.getenv('REFRESH_TOKEN_EXPIRE_MINUTES')
+    ALGORITHM:str = os.getenv('ALGORITHM',"HS256")
+    JWT_SECRET_KEY:str = os.getenv('JWT_SECRET_KEY')
+    JWT_REFRESH_SECRET_KEY:str = os.getenv('JWT_REFRESH_SECRET_KEY')
+
+    
+
 class DataFormatter:
     @staticmethod
     def success_post_response(model_name,data):

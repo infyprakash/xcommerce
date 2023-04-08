@@ -1,5 +1,5 @@
 from sqlalchemy import Column,Boolean,Integer,String,Float,Unicode,DateTime,ForeignKey,Date
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship,deferred
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from src.db.database import Base
@@ -14,7 +14,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     phone_no = Column(String, unique=True, index=True)
     date_of_birth = Column(Date,nullable=True,default='2050-01-01')
-    hashed_password = Column(String)
+    hashed_password = deferred(Column(String))
     is_superuser = Column(Boolean, default=False)
     is_staff = Column(Boolean,default=False)
     is_active = Column(Boolean,default=True)
