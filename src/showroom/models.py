@@ -24,13 +24,24 @@ class Address(Base):
     created_at = Column(DateTime,nullable=False,default=datetime.utcnow())
     updated_at = Column(DateTime,nullable=False,default=datetime.utcnow())
 
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key=True, index=True)
+    uuid = Column(UUID(as_uuid=True),unique=True,index=True,default=uuid4)
+    name = Column(String,nullable=False,default='name of category')
+    logo_url = Column(String,nullable=False,default='logo.png')
+    description = Column(Unicode,default="description text")
+    is_active = Column(Boolean,default=True)
+    created_at = Column(DateTime,nullable=False,default=datetime.utcnow())
+    updated_at = Column(DateTime,nullable=False,default=datetime.utcnow()) 
+
 
 class Shop(Base):
     __tablename__ = 'shops'
     id = Column(Integer, primary_key=True, index=True)
     uuid = Column(UUID(as_uuid=True),unique=True,index=True,default=uuid4)
     name = Column(String,nullable=False,default='Your shop name')
-    business_type = Column(String,nullable=False,default='all')
+    shop_categories = Column(Integer,ForeignKey('categories.id'))
     address = Column(Integer,ForeignKey('addresses.id'))
     phone_no = Column(String,nullable=False)
     email = Column(String,nullable=True)

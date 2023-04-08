@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker,scoped_session,Session
 from sqlalchemy import Column,Boolean,Integer,String,Float,Unicode,DateTime,ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from uuid import uuid4
@@ -22,11 +23,18 @@ class Database:
         logger.info(f'[X]       Connecting to database: {db_url}')
         try:
             self.db_url = db_url
-            self._engine = create_engine(db_url)
+            self._engine = create_engine(db_url,poolclass=StaticPool,echo=False)
+        except Exception as e:
+            self._engine.dispose()
+            self._session_factory.remove()
+        else:
             self._session_maker = sessionmaker(autocommit=False,autoflush=False,future=True,bind=self._engine)
             self._session_factory = scoped_session(self._session_maker)
-        except Exception as e:
-            logger.error(e)
+        finally:
+            self._engine.dispose()
+            self._session_factory.remove()
+
+
 
     def models_import(self):
         from src.catalogue import models
@@ -54,7 +62,8 @@ class Database:
             
     def destroy_session(self):
         logger.info(f'[X]       Disconnecting from database: {self.db_url}')
-        self._session_factory.close_all()
         self._engine.dispose()
+        self._session_maker.close()
+        self._session_factory.remove()
 
 

@@ -5,18 +5,18 @@ from uuid import uuid4
 from src.db.database import Base
 from datetime import datetime
 
-class Category(Base):
-    __tablename__ = 'categories'
+# class Category(Base):
+#     __tablename__ = 'categories'
 
-    id = Column(Integer,primary_key=True,index=True)
-    uuid = Column(UUID(as_uuid=True),unique=True,index=True,default=uuid4)
-    name = Column(String,nullable=False,default='This is a sample product name')
-    image = Column(String,nullable=False)
-    description = Column(Unicode,default="description text")
-    is_active = Column(Boolean,default=True)
-    created_at = Column(DateTime,nullable=False,default=datetime.utcnow())
-    updated_at = Column(DateTime,nullable=False,default=datetime.utcnow())
-    products = relationship('Product',back_populates='category')
+#     id = Column(Integer,primary_key=True,index=True)
+#     uuid = Column(UUID(as_uuid=True),unique=True,index=True,default=uuid4)
+#     name = Column(String,nullable=False,default='This is a sample product name')
+#     image = Column(String,nullable=False)
+#     description = Column(Unicode,default="description text")
+#     is_active = Column(Boolean,default=True)
+#     created_at = Column(DateTime,nullable=False,default=datetime.utcnow())
+#     updated_at = Column(DateTime,nullable=False,default=datetime.utcnow())
+#     products = relationship('Product',back_populates='category')
 
 class Product(Base):
     __tablename__ = 'products'
@@ -33,11 +33,11 @@ class Product(Base):
     is_active = Column(Boolean,default=True)
     created_at = Column(DateTime,nullable=False,default=datetime.now())
     updated_at = Column(DateTime,nullable=False,default=datetime.now())
-    category_id = Column(Integer,ForeignKey('categories.id'))
+    # category_id = Column(Integer,ForeignKey('categories.id'))
     shop_id = Column(Integer,ForeignKey('shops.id'))
 
     
-    category = relationship('Category',back_populates='products')
+    # category = relationship('Category',back_populates='products')
     product_images = relationship('ProductImage',back_populates='products')
     shop = relationship('Shop',back_populates='products')
 

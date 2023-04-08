@@ -38,11 +38,32 @@ class AddressModel(AddressBase):
     class Config:
         orm_mode = True
 
+# schema for shop categories
+class CategoryBase(BaseModel):
+    name: str 
+    description: str 
+
+class CategoryCreate(CategoryBase):
+    pass 
+
+class CategoryUpdate(CategoryBase):
+    id: int 
+
+class CategoryModel(CategoryBase):
+    id: int
+    uuid: Optional[uuid.UUID]
+    logo_url: str 
+    # products: List[ProductModel] = []
+
+    class Config:
+        orm_mode = True
+
+
 # schema for shop
 
 class ShopBase(BaseModel):
     name: str
-    business_type: BusinessTypeEnum  = None
+    shop_categories: int 
     address: int
     phone_no: str 
     email: EmailStr
@@ -57,7 +78,7 @@ class ShopCreate(ShopBase):
         schema_extra = {
             "example":{
                     "name": "xyz shop",
-                    "business_type": "Grocery",
+                    "shop_categories": 100,
                     "address": 100,
                     "phone_no": "9840143772",
                     "email": "xyz@gmail.com",

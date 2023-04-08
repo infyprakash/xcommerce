@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 from fastapi import status
 from fastapi.encoders import jsonable_encoder
-from src.catalogue.schemas import CategoryModel
 
 
 from pathlib import Path

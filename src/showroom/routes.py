@@ -1,14 +1,18 @@
 from fastapi import APIRouter,Depends,HTTPException,Response,status,UploadFile
-from src.showroom.schemas import AddressCreate,AddressModel,ShopCreate,ShopModel,ShopUpdate
+from src.showroom.schemas import AddressCreate,AddressModel,ShopCreate,ShopModel,ShopUpdate,CategoryCreate,CategoryUpdate,CategoryModel
 from src.core.container import Container
-from src.showroom.models import Address,Shop
+from src.showroom.models import Address,Shop,Category
 from src.core.repositories import ModelRepositories
+from src.showroom.queries import ShopRepositories
 from fastapi.responses import JSONResponse
 from src.core.config import fomatter
 
 
 address_router = APIRouter(prefix='/address',tags=['address'])
 shop_router = APIRouter(prefix='/shop',tags=['shop'])
+shop_category_router = APIRouter(prefix='/shop/category',tags=['shop_category'])
+
+
 
 # address APIs
 @address_router.post('')
@@ -51,6 +55,58 @@ def update_address_by_id(id:int,address:AddressCreate):
     the_address = c.update_object(the_address,data=address)
     return JSONResponse(**fomatter.success_update_response(the_address,'address',id))
 
+#shop category APIs
+
+@shop_category_router.post('')
+def create_shop_category(shop_category:CategoryCreate=Depends(),logo_image:UploadFile | None = None):
+    c = ModelRepositories(model_type=Category)
+    shop_category = shop_category.dict()
+    
+    if logo_image:
+        logo_image_path = c.file_upload_and_save(logo_image,'category')
+        shop_category['logo_url'] = logo_image_path
+
+    the_shop_category = c.create(shop_category)
+    return JSONResponse(**fomatter.success_post_response('shop_category',the_shop_category))
+
+@shop_category_router.get('')
+def get_shop_category_by_id(id:int):
+    c = ModelRepositories(model_type=Category)
+    the_shop_category = c.get_by_id(id=id)
+    if the_shop_category is None:
+        return JSONResponse(**fomatter.error_get_by_id_response('shop_category',id))
+    return JSONResponse(**fomatter.success_get_response(the_shop_category,CategoryModel))
+
+@shop_category_router.get('/all')
+def get_all_shop_categories():
+    c = ModelRepositories(model_type=Category)
+    the_shop_categories = c.get_all()
+    if the_shop_categories is None:
+        return JSONResponse(**fomatter.error_get_by_id_response('shop_category'))
+    return JSONResponse(**fomatter.success_get_all_response(the_shop_categories))
+
+@shop_category_router.delete('')
+def delete_shop_category_by_id(id:int):
+    c = ModelRepositories(model_type=Category)
+    the_shop_category = c.get_by_id(id=id)
+    if the_shop_category is None:
+        return JSONResponse(**fomatter.error_get_by_id_response('shop_category',id))
+    c.delete_object(the_shop_category)
+    return JSONResponse(**fomatter.success_delete_response('shop_category',id))
+
+@shop_category_router.put('')
+def update_shop_category_by_id(shop_category:CategoryUpdate=Depends(),logo_image:UploadFile | None = None):
+    c = ModelRepositories(model_type=Category)
+    the_shop_category = c.get_by_id(id=id)
+    if the_shop_category is None:
+        return JSONResponse(**fomatter.error_get_by_id_response('shop_category',id))
+    if logo_image:
+        logo_image_path = c.file_upload_and_save(logo_image,'shop_category')
+        shop_category = shop_category.dict()
+        shop_category['logo_url'] = logo_image_path
+
+    the_shop_category = c.update_object(the_shop_category,data=shop_category)
+    return JSONResponse(**fomatter.success_update_response(the_shop_category,'shop_category',id))
 
 # shop APIs
 @shop_router.post('')
@@ -92,6 +148,14 @@ def delete_shop_by_id(id:int):
         return JSONResponse(**fomatter.error_get_by_id_response('shop',id))
     c.delete_object(the_shop)
     return JSONResponse(**fomatter.success_delete_response('shop',id))
+@shop_router.get('/by/category/id')
+def get_shop_by_category(category_id:int):
+    shop_obj = ShopRepositories(model_type=Shop)
+    the_shops = shop_obj.shop_by_category_id(category_id=category_id)
+    if the_shops is None:
+        return JSONResponse(**fomatter.error_get_by_id_response('shop',id))
+    return JSONResponse(**fomatter.success_get_all_response(the_shops))
+
 
 @shop_router.put('')
 def update_shop_by_id(shop:ShopUpdate=Depends(),banner_image:UploadFile | None = None,logo_image:UploadFile | None = None):

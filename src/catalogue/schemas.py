@@ -37,7 +37,6 @@ class ProductBase(BaseModel):
     description: str
     available: bool = True
     quantity:float = 0.0
-    category_id: int
     shop_id: int
 
 
@@ -51,7 +50,7 @@ class ProductCreate(ProductBase):
                     "description":"premium apple's Iphone13",
                     "available": True,
                     "quantity": 100,
-                    "category_id":100,
+                    # "category_id":100,
                     "shop_id":100
             }
         }
@@ -64,31 +63,31 @@ class ProductModel(ProductBase):
         orm_mode = True
     
 # schema for category
-class CategoryBase(BaseModel):
-    name: str 
-    # image: str
-    description: str
+# class CategoryBase(BaseModel):
+#     name: str 
+#     # image: str
+#     description: str
 
-class CategoryCreate(CategoryBase):
-    pass
-    # class config:
-    #     schema_extra = {
-    #         "example":{
-    #                 "name":"Grocery",
-    #                 # "image":"grocery.png",
-    #                 "description":"Describe this category"
-    #         }
-    #     }
-class CategoryUpdate(CategoryBase):
-    id: int 
+# class CategoryCreate(CategoryBase):
+#     pass
+#     # class config:
+#     #     schema_extra = {
+#     #         "example":{
+#     #                 "name":"Grocery",
+#     #                 # "image":"grocery.png",
+#     #                 "description":"Describe this category"
+#     #         }
+#     #     }
+# class CategoryUpdate(CategoryBase):
+#     id: int 
 
-class CategoryModel(CategoryBase):
-    id: int 
-    image: str 
-    uuid: UUID
-    products: list[ProductModel] = []
-    class Config:
-        orm_mode = True
+# class CategoryModel(CategoryBase):
+#     id: int 
+#     image: str 
+#     uuid: UUID
+#     products: list[ProductModel] = []
+#     class Config:
+#         orm_mode = True
     
 
 

@@ -4,7 +4,6 @@ import logging
 from datetime import datetime
 from fastapi import HTTPException,status
 from src.core.container import Container
-from src.catalogue.models import Category
 from fastapi.responses import JSONResponse
 from src.core.config import setting
 
@@ -81,12 +80,17 @@ class ModelRepositories(object):
         if not os.path.exists(media_dir):
             os.makedirs(media_dir)
         return media_dir
+    
     @staticmethod
     def check_extension(image_path:str):
         if not image_path.endswith(setting.IMAGE_ALLOWED_EXTENSION):
             return False
         else:
             return True
+    
+    # def __del__(self):
+    #     print('calling destructor....')
+    #     self._session.close()
 
             
 
